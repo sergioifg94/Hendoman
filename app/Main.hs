@@ -5,6 +5,7 @@ import System.Environment
 import qualified Parse.HtmlParser as HTML
 import qualified Naming.VariableAssignment as Assignment
 import qualified CodeGeneration.CodeGenerator as CG
+import qualified Parse.Repeat as R
 
 import qualified CodeGeneration.Javascript.JavascriptES6 as ES6
 
@@ -35,4 +36,4 @@ getArgValue key (arg:(val:args))
 getArgValue key [_] = MaybeT $ return Nothing
 
 processHtml :: String -> MaybeT IO String
-processHtml html = MaybeT $ return (CG.generateCode ES6.javascript . Assignment.assignNames <$> HTML.parseHtml html)
+processHtml html = MaybeT $ return (CG.generateCode ES6.javascript . Assignment.assignNames <$> (HTML.parseHtml html >>= R.withRepeat))
