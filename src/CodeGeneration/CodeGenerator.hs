@@ -29,9 +29,9 @@ module CodeGeneration.CodeGenerator (generateCode) where
   writeNode parent node@HtmlElement { elementVarName = Just varName, tag = tag',
     children = children', attributes = attributes' } = do
       js <- lift ask
-      writeLine $ "var " ++ varName ++ " = document.createElement(" ++ tag' ++ ");"
+      writeLine $ "var " ++ varName ++ " = document.createElement(\"" ++ tag' ++ "\");"
       writeAttributes varName attributes'
-      forM_ children' (writeNode (Just node))      
+      forM_ children' (writeNode (Just node))
       appendToParent parent varName
 
   -- | Write a repeated node
@@ -51,8 +51,8 @@ module CodeGeneration.CodeGenerator (generateCode) where
 
   -- | Write the code for the attribute s of the node
   writeAttributes :: String -> Map.Map String String -> CodeGeneration
-  writeAttributes varName attr = sequence_ $ Map.foldrWithKey
-    (\k v acc -> (writeLine (varName ++ ".setAttribute(" ++ k ++ ", " ++ v ++ ");"):acc)) [] attr
+  writeAttributes varName = sequence_ . Map.foldrWithKey
+    (\k v acc -> (writeLine (varName ++ ".setAttribute(\"" ++ k ++ "\", \"" ++ v ++ "\");"):acc)) []
 
 
   -- | Append a line to the current code
