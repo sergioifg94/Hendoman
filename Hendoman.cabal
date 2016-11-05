@@ -1,0 +1,54 @@
+name:                Hendoman
+version:             0.1.0.0
+synopsis:            Initial project template from stack
+description:         Please see README.md
+homepage:            https://github.com/sergioifg94/Hendoman#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Author name here
+maintainer:          example@example.com
+copyright:           2016 Author name here
+category:            Web
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Parse.TemplateParser
+                     , Tree.TemplateExpression
+                     , Tree.HtmlTree
+                     , Naming.VariableAssignment
+                     , Parse.HtmlParser
+                     , CodeGeneration.JavascriptCode
+                     , CodeGeneration.CodeGenerator
+                     , CodeGeneration.Javascript.JavascriptES6
+  build-depends:       base >= 4.7 && < 5, containers, mtl, parsec, tagsoup
+  default-language:    Haskell2010
+
+executable Hendoman-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , transformers
+                     , Hendoman
+  default-language:    Haskell2010
+
+test-suite Hendoman-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  other-modules:       Parse.TemplateParserTest, Naming.VariableAssignmentTest
+  build-depends:       base
+                     , Hendoman
+                     , test-framework
+                     , test-framework-hunit
+                     , HUnit
+                     , containers
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/sergioifg94/Hendoman
