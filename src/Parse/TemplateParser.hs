@@ -2,12 +2,13 @@ module Parse.TemplateParser (parseText) where
 
   import Text.ParserCombinators.Parsec
 
+  import Except.TypeDef
   import qualified Tree.TemplateExpression as TE
 
-  parseText :: String -> Maybe TE.Text
+  parseText :: String -> Either Exception TE.Text
   parseText text = case parse parseTemplate "Text" text of
-    Right result -> Just result
-    Left _ -> Nothing
+    Right result -> Right result
+    Left _ -> Left $ ParseException "Failed parsing template expression"
 
   parseTemplate :: Parser TE.Text
   parseTemplate = do

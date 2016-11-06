@@ -1,5 +1,7 @@
 module Parse.HtmlParser (parseHtml) where
 
+import Except.TypeDef
+
 import Tree.HtmlTree
 import qualified Parse.TemplateParser as TP
 import qualified Tree.TemplateExpression as TE
@@ -10,10 +12,10 @@ import Text.ParserCombinators.Parsec
 import qualified Data.Map as M
 
 
-parseHtml :: String -> Maybe [HtmlNode]
+parseHtml :: String -> Either Exception [HtmlNode]
 parseHtml input = case parse (many1 parseNode) "HTML" (parseTags input) of
-  Left _ -> Nothing
-  Right nodes -> Just nodes
+  Left _ -> Left $ ParseException "Parsing error"
+  Right nodes -> Right nodes
 
 -- | Parses an HTML node
 parseNode = try parseElement <|> parseText
@@ -31,7 +33,9 @@ parseText = HtmlText Nothing <$> textNode
 -- | Parses the text from a text node
 textNode = tokenPrim show update isText where
   isText :: Tag String -> Maybe TE.Text
-  isText (TagText text) = TP.parseText text
+  isText (TagText text) = case TP.parseText text of
+    Right res -> Just res
+    Left _ -> Nothing
   isText _ = Nothing
 
 -- | Parses an element opening tag

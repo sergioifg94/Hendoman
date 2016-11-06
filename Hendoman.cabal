@@ -24,6 +24,7 @@ library
                      , CodeGeneration.CodeGenerator
                      , CodeGeneration.Javascript.JavascriptES6
                      , Parse.Repeat
+                     , Except.TypeDef
   build-depends:       base >= 4.7 && < 5, containers, mtl, parsec, tagsoup
   default-language:    Haskell2010
 
@@ -33,6 +34,7 @@ executable hendoman
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , transformers
+                     , either
                      , Hendoman
   default-language:    Haskell2010
 
