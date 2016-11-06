@@ -36,4 +36,4 @@ getArgValue key (arg:(val:args))
 getArgValue key [_] = MaybeT $ return Nothing
 
 processHtml :: String -> MaybeT IO String
-processHtml html = MaybeT $ return (CG.generateCode ES6.javascript . Assignment.assignNames <$> (HTML.parseHtml html >>= R.withRepeat))
+processHtml html = MaybeT $ return (CG.generateCode ES6.javascript . Assignment.assignNames <$> (R.withRepeat =<< HTML.parseHtml html))

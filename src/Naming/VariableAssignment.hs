@@ -19,7 +19,7 @@ module Naming.VariableAssignment (assignNames) where
   type Assignment a = State AssignmentState a
 
   -- | Traverses the tree and assigns variable names to the nodes, creating a
-  -- | new tree
+  -- new tree
   assignNames :: [HtmlNode] -> [HtmlNode]
   assignNames nodes = let (nodes', _) = runState (forM nodes assignName) initialState
     in nodes'
@@ -28,8 +28,8 @@ module Naming.VariableAssignment (assignNames) where
   assignName :: HtmlNode -> Assignment HtmlNode
   assignName node@(HtmlElement _ t c a) = do {
     st <- get;
-    -- | If the node doesn't have an ID, assign it the default name and increase
-    -- | the index
+    -- If the node doesn't have an ID, assign it the default name and increase
+    -- the index
     if not (hasId node) then do
       modify addElementName
       c' <- assignChildren c
