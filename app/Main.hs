@@ -11,34 +11,27 @@ import qualified CodeGeneration.Javascript.JavascriptES6 as ES6
 
 import Except.TypeDef
 
+import CommandLine
+
 import Control.Monad
 import Control.Monad.IO.Class
 import Control.Monad.Trans.Either
 import Control.Monad.Trans.Class
 
+import Options
+
 main :: IO ()
 main = runEitherT run >>= \r -> case r of
-  Right outputFilename -> putStrLn ("Output written at " ++ outputFilename)
+  Right _ -> return ()
   Left ex -> putStrLn $ exceptionMessage ex
 
-run :: EitherT Exception IO String
+run :: EitherT Exception IO ()
 run = do
   args <- lift getArgs
-  input <- getArgValue "-i" args
-  output <- getArgValue "-o" args
-  html <- lift $ readFile input
+  options <- hoistEither $ getOptions args
+  html <- lift $ readFile (input options)
   code <- processHtml html
-  lift $ writeFile output code
-  return output
-
-getArgValue :: String -> [String] -> EitherT Exception IO String
-getArgValue key (arg:(val:args))
-  | key == arg = return val
-  | otherwise = getArgValue key (val:args)
-
-getArgValue key [_] = left ArgumentException
-
-getArgValue key [] = left ArgumentException
+  lift $ outputWriter options code
 
 
 processHtml :: String -> EitherT Exception IO String
