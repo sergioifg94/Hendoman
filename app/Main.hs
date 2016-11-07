@@ -38,6 +38,8 @@ getArgValue key (arg:(val:args))
 
 getArgValue key [_] = left ArgumentException
 
+getArgValue key [] = left ArgumentException
+
 
 processHtml :: String -> EitherT Exception IO String
 processHtml html = hoistEither (CG.generateCode ES6.javascript . Assignment.assignNames <$> (R.withRepeat =<< HTML.parseHtml html))
