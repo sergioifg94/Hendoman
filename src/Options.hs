@@ -6,7 +6,7 @@ import CodeGeneration.JavascriptCode
 data Options = Options {
 
   -- | Input HTML
-  input :: FilePath,
+  inputReader :: IO String,
 
   -- | Function that writes the output
   outputWriter :: String -> IO (),

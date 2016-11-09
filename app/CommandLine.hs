@@ -17,10 +17,10 @@ getOptions = runReader $ runEitherT optionsFromArgs
 optionsFromArgs :: EitherT Exception (Reader [String]) Options
 optionsFromArgs = do
   args <- lift ask
-  input <- hoistEither $ getArgValue "-i" args
   outputWriter <- getOutputWriter
+  inputReader <- getInputReader
   js <- lift getJavascript
-  return $ Options input outputWriter js
+  return $ Options inputReader outputWriter js
 
 
 getArgValue :: String -> [String] -> Either Exception String
@@ -43,9 +43,17 @@ getJavascript = do
 
 getOutputWriter :: EitherT Exception (Reader [String]) (String -> IO ())
 getOutputWriter = do
-  args <- ask
+  args <- lift ask
   if "-o" `elem` args then
     hoistEither (getArgValue "-o" args) >>= \output ->
      (return $ \o -> putStrLn ("Written at " ++ output) >> writeFile output o)
   else
     return putStrLn
+
+getInputReader :: EitherT Exception (Reader [String]) (IO String)
+getInputReader = do
+  args <- lift ask
+  if "-i" `elem` args then
+    hoistEither $ readFile <$> getArgValue "-i" args
+  else
+    return getContents

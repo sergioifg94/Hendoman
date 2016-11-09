@@ -29,7 +29,7 @@ run :: EitherT Exception IO ()
 run = do
   args <- lift getArgs
   options <- hoistEither $ getOptions args
-  html <- lift $ readFile (input options)
+  html <- lift $ inputReader options
   code <- processHtml html
   lift $ outputWriter options code
 
