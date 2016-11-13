@@ -26,7 +26,7 @@ library
                      , Parse.Repeat
                      , Except.TypeDef
                      , Options
-  build-depends:       base >= 4.7 && < 5, containers, mtl, parsec, tagsoup
+  build-depends:       base >= 4.7 && < 5, containers, mtl, parsec, tagsoup, text
   default-language:    Haskell2010
 
 executable hendoman

@@ -10,10 +10,11 @@ import Text.HTML.TagSoup
 import Text.ParserCombinators.Parsec
 
 import qualified Data.Map as M
+import qualified Data.Text as T
 
 
 parseHtml :: String -> Either Exception [HtmlNode]
-parseHtml input = case parse (many1 parseNode) "HTML" (parseTags input) of
+parseHtml input = case parse (parseNodesWith many1) "HTML" (parseTags input) of
   Left _ -> Left $ ParseException "Parsing error"
   Right nodes -> Right nodes
 
@@ -23,7 +24,7 @@ parseNode = try parseElement <|> parseText
 -- | Parses an HTML element
 parseElement = do
   (tagName, attributes) <- openTag
-  children <- many parseNode
+  children <- parseNodesWith many
   closeTag tagName
   return $ HtmlElement Nothing tagName children attributes
 
@@ -37,6 +38,11 @@ textNode = tokenPrim show update isText where
     Right res -> Just res
     Left _ -> Nothing
   isText _ = Nothing
+
+parseNodesWith fParse = filter notEmpty <$> fParse parseNode where
+  notEmpty :: HtmlNode -> Bool
+  notEmpty (HtmlText _ [TE.Literal lit]) = T.strip (T.pack lit) /= T.empty
+  notEmpty _ = True
 
 -- | Parses an element opening tag
 openTag = tokenPrim show update isOpen where

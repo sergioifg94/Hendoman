@@ -45,8 +45,8 @@ getOutputWriter :: EitherT Exception (Reader [String]) (String -> IO ())
 getOutputWriter = do
   args <- lift ask
   if "-o" `elem` args then
-    hoistEither (getArgValue "-o" args) >>= \output ->
-     (return $ \o -> putStrLn ("Written at " ++ output) >> writeFile output o)
+    hoistEither (getArgValue "-o" args) >>= \outputPath ->
+     return $ (>>) (putStrLn $ "Written at " ++ outputPath) . writeFile outputPath
   else
     return putStrLn
 
