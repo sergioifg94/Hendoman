@@ -23,6 +23,7 @@ library
                      , CodeGeneration.JavascriptCode
                      , CodeGeneration.CodeGenerator
                      , CodeGeneration.Javascript.JavascriptES6
+                     , CodeGeneration.Javascript.JavascriptES5
                      , Parse.Repeat
                      , Except.TypeDef
                      , Options

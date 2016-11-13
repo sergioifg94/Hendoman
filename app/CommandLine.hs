@@ -9,6 +9,7 @@ import Control.Monad.Reader
 
 import CodeGeneration.JavascriptCode
 import qualified CodeGeneration.Javascript.JavascriptES6 as ES6
+import qualified CodeGeneration.Javascript.JavascriptES5 as ES5
 
 -- | Get the options from the arguments
 getOptions :: [String] -> Either Exception Options
@@ -36,8 +37,8 @@ getArgValue key [] = Left ArgumentException
 getJavascript :: Reader [String] JavascriptCode
 getJavascript = do
   args <- ask
-  if "--es6" `elem` args then
-    return ES6.javascript
+  if "--es5" `elem` args then
+    return ES5.javascript
   else
     return ES6.javascript
 

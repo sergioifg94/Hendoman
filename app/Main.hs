@@ -7,7 +7,7 @@ import qualified Naming.VariableAssignment as Assignment
 import qualified CodeGeneration.CodeGenerator as CG
 import qualified Parse.Repeat as R
 
-import qualified CodeGeneration.Javascript.JavascriptES6 as ES6
+import CodeGeneration.JavascriptCode
 
 import Except.TypeDef
 
@@ -30,12 +30,12 @@ run = do
   args <- lift getArgs
   options <- hoistEither $ getOptions args
   html <- lift $ inputReader options
-  code <- processHtml html
+  code <- processHtml html (javascript options)
   lift $ outputWriter options code
 
 
-processHtml :: String -> EitherT Exception IO String
-processHtml html = hoistEither (CG.generateCode ES6.javascript . Assignment.assignNames <$> (R.withRepeat =<< HTML.parseHtml html))
+processHtml :: String -> JavascriptCode -> EitherT Exception IO String
+processHtml html js = hoistEither (CG.generateCode js . Assignment.assignNames <$> (R.withRepeat =<< HTML.parseHtml html))
 
 
 exceptionMessage :: Exception -> String

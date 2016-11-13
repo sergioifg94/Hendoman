@@ -53,11 +53,15 @@ parseRepeatExpr :: Parser Repeat
 parseRepeatExpr = do
   var <- parseVar
   parseIn
-  repeater <- parseVar
+  repeater <- parseRepeater
+  eof
   return (var, repeater)
 
 parseVar :: Parser String
 parseVar = many1 $ noneOf " "
+
+parseRepeater :: Parser String
+parseRepeater = many1 anyChar
 
 parseIn :: Parser ()
 parseIn = do
