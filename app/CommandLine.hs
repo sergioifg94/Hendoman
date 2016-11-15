@@ -7,6 +7,7 @@ import Control.Monad.Trans.Either
 
 import Control.Monad.Reader
 
+import Template
 import CodeGeneration.JavascriptCode
 import qualified CodeGeneration.Javascript.JavascriptES6 as ES6
 import qualified CodeGeneration.Javascript.JavascriptES5 as ES5
@@ -20,8 +21,9 @@ optionsFromArgs = do
   args <- lift ask
   outputWriter <- getOutputWriter
   inputReader <- getInputReader
+  processTemplate <- getTemplateProcessor
   js <- lift getJavascript
-  return $ Options inputReader outputWriter js
+  return $ Options inputReader (processTemplate >=> outputWriter) js
 
 
 getArgValue :: String -> [String] -> Either Exception String
@@ -50,6 +52,14 @@ getOutputWriter = do
      return $ (>>) (putStrLn $ "Written at " ++ outputPath) . writeFile outputPath
   else
     return putStrLn
+
+getTemplateProcessor :: EitherT Exception (Reader [String]) (String -> IO String)
+getTemplateProcessor = do
+  args <- lift ask
+  if "-t" `elem` args then
+    withTemplate <$> hoistEither (getArgValue "-t" args)
+  else
+    return (return :: String -> IO String)
 
 getInputReader :: EitherT Exception (Reader [String]) (IO String)
 getInputReader = do

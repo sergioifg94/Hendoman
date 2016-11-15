@@ -38,6 +38,7 @@ executable hendoman
                      , transformers
                      , either
                      , mtl
+                     , regex-compat
                      , Hendoman
   default-language:    Haskell2010
 
